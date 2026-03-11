@@ -4,19 +4,23 @@ import { useBreakpoint } from "./hooks";
 import { ToastContainer } from "./components/UI";
 import { useState } from "react";
 
-import Login      from "./pages/Login";
-import Dashboard  from "./pages/Dashboard";
-import Employees  from "./pages/Employees";
-import Attendance from "./pages/Attendance";
+import Login        from "./pages/Login";
+import Dashboard    from "./pages/Dashboard";
+import Employees    from "./pages/Employees";
+import Attendance   from "./pages/Attendance";
 import RoleMatching from "./pages/RoleMatching";
-import Pipeline   from "./pages/Pipeline";
+import Pipeline     from "./pages/Pipeline";
+import Overtime     from "./pages/Overtime";
+import Attrition    from "./pages/Attrition";
 
 const NAV = [
-  { to:"/",         label:"Dashboard",   icon:"◼", end:true },
-  { to:"/workers",  label:"Workers",     icon:"👤" },
+  { to:"/",          label:"Dashboard",  icon:"◼",  end:true },
+  { to:"/workers",   label:"Workers",    icon:"👤" },
   { to:"/attendance",label:"Attendance", icon:"📋" },
-  { to:"/matching", label:"Role Match",  icon:"🎯" },
-  { to:"/pipeline", label:"Pipeline",    icon:"📊" },
+  { to:"/overtime",  label:"Overtime",   icon:"⏰" },
+  { to:"/matching",  label:"Role Match", icon:"🎯" },
+  { to:"/pipeline",  label:"Pipeline",   icon:"📊" },
+  { to:"/attrition", label:"Attrition",  icon:"📉" },
 ];
 
 function ProtectedRoute({ children }) {
@@ -91,8 +95,10 @@ function Layout() {
             <Route path="/"          element={<><PageTitle title="Dashboard"/><Dashboard/></>}/>
             <Route path="/workers"   element={<><PageTitle title="Workers"/><Employees/></>}/>
             <Route path="/attendance"element={<><PageTitle title="Attendance & Shifts"/><Attendance/></>}/>
+            <Route path="/overtime"  element={<><PageTitle title="Overtime"/><Overtime/></>}/>
             <Route path="/matching"  element={<><PageTitle title="Role Matching"/><RoleMatching/></>}/>
             <Route path="/pipeline"  element={<><PageTitle title="Skill Pipeline"/><Pipeline/></>}/>
+            <Route path="/attrition" element={<><PageTitle title="Attrition Analysis"/><Attrition/></>}/>
           </Routes>
         </div>
 

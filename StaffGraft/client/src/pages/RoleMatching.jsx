@@ -156,11 +156,29 @@ export default function RoleMatching() {
         </Card>
       )}
 
-      <div style={{display:"grid",gridTemplateColumns:selRole&&!mobile?"1fr 1fr":"1fr",gap:16}}>
-        {/* Roles */}
+      <div style={{display:"grid",gridTemplateColumns:mobile?"1fr":selRole?"1fr 1fr":"1fr",gap:16}}>
+        {/* Roles — sorted: open first, then filled; within each group by priority */}
         <div>
           {currentRoles.length===0 && <Empty icon="📋" text="No roles yet. Create one above."/>}
-          {currentRoles.map(role=>(
+          {(() => {
+            const PRIORITY_ORDER = { critical:0, high:1, medium:2, low:3 };
+            const sorted = [...currentRoles].sort((a,b) => {
+              if (a.status !== b.status) return a.status === "open" ? -1 : 1;
+              return (PRIORITY_ORDER[a.priority]??9) - (PRIORITY_ORDER[b.priority]??9);
+            });
+            const openRoles   = sorted.filter(r=>r.status==="open");
+            const filledRoles = sorted.filter(r=>r.status==="filled");
+            const groups = [];
+            if (openRoles.length)   groups.push({ label:`Open (${openRoles.length})`,   color:"#60b3f5", roles: openRoles });
+            if (filledRoles.length) groups.push({ label:`Filled (${filledRoles.length})`, color:"#4cde9f", roles: filledRoles });
+            return groups.map(g=>(
+              <div key={g.label}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:g.color}}/>
+                  <span style={{color:g.color,fontSize:11,fontWeight:700,letterSpacing:1,textTransform:"uppercase"}}>{g.label}</span>
+                  <div style={{flex:1,height:1,background:g.color+"22"}}/>
+                </div>
+                {g.roles.map(role=>(
             <div key={role._id}
               onClick={()=>selectRole(role)}
               style={{
@@ -168,6 +186,7 @@ export default function RoleMatching() {
                 border:`1px solid ${selRole?._id===role._id?"#3d5af1":"#1e2545"}`,
                 borderLeft:selRole?._id===role._id?"3px solid #3d5af1":undefined,
                 borderRadius:12,padding:14,marginBottom:10,cursor:"pointer",transition:"all 0.15s",
+                opacity: role.status==="filled" ? 0.7 : 1,
               }}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"start",marginBottom:8}}>
                 <div>
@@ -193,6 +212,9 @@ export default function RoleMatching() {
               )}
             </div>
           ))}
+              </div>
+            ));
+          })()}
         </div>
 
         {/* Candidates */}

@@ -17,7 +17,11 @@ export default function Login() {
       await login(form.email, form.password);
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      if (!err.response) {
+        setError("Cannot reach server — make sure the backend is running on port 5000");
+      } else {
+        setError(`${err.response.status}: ${err.response.data?.message || "Login failed"}`);
+      }
     } finally {
       setLoading(false);
     }
